@@ -14,12 +14,12 @@ exports.signup = async (req, res, next) => {
             const error = new Error('Validation failed');
             error.statusCode = 422;
             error.data = errors.array();
-            throw error
+            throw error;
         }
         const hashedPassword = await bcryptjs.hash(password, 12);
         const user = new User({
             email, name, password: hashedPassword
-        })
+        });
         await user.save();
         res.status(201).json({ message: `User ${name} has been added.`, userId: user._id.toString() });
     } catch (err) {
@@ -29,7 +29,7 @@ exports.signup = async (req, res, next) => {
         }
         next(err);
     }
-}
+};
 
 exports.login = async (req, res, next) => {
     const { email, password } = req.body;
@@ -51,7 +51,7 @@ exports.login = async (req, res, next) => {
         const token = jsonwebtoken.sign({
             email: user.email,
             userId: user._id.toString()
-        }, process.env.PRIVATE_KEY, { expiresIn: '1h' })
+        }, process.env.PRIVATE_KEY, { expiresIn: '1h' });
         res.status(200).json({ token, userId: user._id.toString() });
     } catch (err) {
 
@@ -60,4 +60,4 @@ exports.login = async (req, res, next) => {
         }
         next(err);
     }
-}
+};
