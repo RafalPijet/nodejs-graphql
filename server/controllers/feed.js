@@ -9,9 +9,9 @@ const clearImage = filePath => {
     filePath = path.join(__dirname, '../', filePath);
     fs.unlink(filePath, err => {
 
-        if (err) console.log(err)
+        if (err) console.log(err);
     });
-}
+};
 
 exports.getUserStatus = async (req, res, next) => {
 
@@ -31,7 +31,7 @@ exports.getUserStatus = async (req, res, next) => {
         }
         next(err);
     }
-}
+};
 
 exports.updateUserStatus = async (req, res, next) => {
     const { status } = req.body;
@@ -42,7 +42,7 @@ exports.updateUserStatus = async (req, res, next) => {
         if (errors.array().length) {
             const error = new Error(`Validation error: ${errors.array()[0].msg}`);
             error.statusCode = 401;
-            throw error
+            throw error;
         }
         const user = await User.findById(req.userId);
 
@@ -53,7 +53,7 @@ exports.updateUserStatus = async (req, res, next) => {
         }
         user.status = status;
         await user.save();
-        res.status(200).json({ status: user.status })
+        res.status(200).json({ status: user.status });
     } catch (err) {
 
         if (!err.statusCode) {
@@ -148,7 +148,7 @@ exports.getPostById = async (req, res, next) => {
         res.status(200).json({
             message: 'Post has been found',
             post
-        })
+        });
     } catch (err) {
 
         if (!err.statusCode) {
@@ -156,12 +156,12 @@ exports.getPostById = async (req, res, next) => {
         }
         next(err);
     }
-}
+};
 
 exports.updatePost = async (req, res, next) => {
     const { postId } = req.params;
     const { title, content } = req.body;
-    imageUrl = req.body.image;
+    const imageUrl = req.body.image;
     const image = req.file;
     const errors = validationResult(req);
 
@@ -174,7 +174,7 @@ exports.updatePost = async (req, res, next) => {
         }
 
         if (image) {
-            imageUrl = image.path
+            imageUrl = image.path;
         }
 
         if (!imageUrl) {
@@ -237,8 +237,8 @@ exports.deletePost = async (req, res, next) => {
         const user = await User.findById(req.userId);
         user.posts.pull(postId);
         await user.save();
-        io.getIO().emit('posts', {action: 'delete', post: postId})
-        res.status(201).json({ message: 'Post has been removed' })
+        io.getIO().emit('posts', {action: 'delete', post: postId});
+        res.status(201).json({ message: 'Post has been removed' });
     } catch (err) {
 
         if (!err.statusCode) {
@@ -246,4 +246,4 @@ exports.deletePost = async (req, res, next) => {
         }
         next(err);
     }
-}
+};
